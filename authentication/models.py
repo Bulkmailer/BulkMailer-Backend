@@ -45,7 +45,7 @@ class New_User_Resgistration(AbstractBaseUser):
    name = models.CharField(max_length=150, default=None)
    user_name = models.CharField(max_length=150, blank=True, null=True, default=None, unique=True)
    gender = models.CharField(max_length=1, choices=GENDER, blank=False,default="M")
-   mobile = models.BigIntegerField(blank=True)
+   mobile = models.BigIntegerField(blank=True,default=91)
    is_active = models.BooleanField(default=True)
    is_admin = models.BooleanField(default=False)
 
@@ -57,7 +57,20 @@ class New_User_Resgistration(AbstractBaseUser):
     
    def __str__(self):
         return self.email
-    
+
+   def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+   def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+   @property
+   def is_staff(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin
 
 
 
