@@ -80,11 +80,11 @@ WSGI_APPLICATION = "bulkmailer.wsgi.application"
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-       'NAME': 'bulkmailer',
-       'USER': 'postgres',
-       'PASSWORD': 'derby@7348',
-       'HOST': 'localhost',
-       'PORT': '5432'
+       'NAME': 'railway',
+       'USER': os.environ.get('DB_USER'),
+       'PASSWORD': os.environ.get('DB_PASSWORD'),
+       'HOST': 'containers-us-west-125.railway.app',
+       'PORT': '7195'
    }
 }
 

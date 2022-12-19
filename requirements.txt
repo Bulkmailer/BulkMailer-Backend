@@ -13,3 +13,4 @@ psycopg2-pool==1.1
 PyJWT==2.6.0
 pytz==2022.6
 sqlparse==0.4.3
+waitress==2.1.2
