@@ -71,6 +71,18 @@ class New_User_Resgistration(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+   def tokens(self):
+        refresh=RefreshToken.for_user(self)
+        return{
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
+   def refresh(self):
+        refresh=RefreshToken.for_user(self)
+        return str(refresh)
+   def access(self):
+        refresh = RefreshToken.for_user(self)
+        return str(refresh.access_token)
 
 
 
@@ -78,7 +90,6 @@ class New_User_Resgistration(AbstractBaseUser):
 class OTP(models.Model):
      email = models.EmailField(verbose_name='email address',
         max_length=255,
-        unique=True,
         validators=[EmailValidator()])
      otp = models.CharField(max_length=4, blank=True, null=True)
      time = models.DateTimeField(default=timezone.now)
