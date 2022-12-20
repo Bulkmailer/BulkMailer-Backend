@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-16yor6r^23fv89x)urhurhu@wpo5v*l70#^f_-7=rc(jm%nl#9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['bulk-mailer-backend-production.up.railway.app','127.0.0.1']
 
 
 # Application definition
@@ -80,11 +80,11 @@ WSGI_APPLICATION = "bulkmailer.wsgi.application"
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-       'NAME': 'bulkmailer',
-       'USER': 'postgres',
-       'PASSWORD': 'derby@7348',
-       'HOST': 'localhost',
-       'PORT': '5432'
+       'NAME': 'railway',
+       'USER': os.environ.get('DB_USER'),
+       'PASSWORD': os.environ.get('DB_PASSWORD'),
+       'HOST': 'containers-us-west-125.railway.app',
+       'PORT': '7195'
    }
 }
 
@@ -149,3 +149,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://bulk-mailer-backend-production.up.railway.app'
+]
