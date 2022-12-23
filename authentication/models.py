@@ -5,6 +5,10 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.db.models.signals import pre_save,post_save
+from django.dispatch import receiver
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
+
 # Create your models here.
 
 class MyUserManager(BaseUserManager):
@@ -93,8 +97,19 @@ class OTP(models.Model):
         validators=[EmailValidator()])
      otp = models.CharField(max_length=4, blank=True, null=True)
      time = models.DateTimeField(default=timezone.now)
+     is_verified = models.BooleanField(default=False)
      
         
      def __str__(self):
          return self.email
 
+@receiver(pre_save, sender=New_User_Resgistration)
+def revoke_tokens(sender, instance, update_fields, **kwargs):
+    if not instance._state.adding:
+        existing_user = New_User_Resgistration.objects.get(pk=instance.pk)
+        if instance.password != existing_user.password or instance.email != existing_user.email or instance.user_name != existing_user.user_name:
+              outstanding_tokens = OutstandingToken.objects.filter(user__pk=instance.pk)
+              for out_token in outstanding_tokens:
+                   if hasattr(out_token, 'blacklistedtoken'):
+                       continue
+                   BlacklistedToken.objects.create(token=out_token)
