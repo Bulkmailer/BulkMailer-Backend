@@ -23,12 +23,13 @@ class OTP_Serializer(serializers.ModelSerializer):
             raise ValidationError(
                 ("Enter a valid email")
             )
-        user = New_User_Resgistration.objects.filter(email=email)
-        if user is not None:
+        try:    
+            New_User_Resgistration.objects.get(email=email)
             raise ValidationError(
                 {'msg':'User already exists'}
             )
-        return data
+        except:
+            return data
     
     def create(self, data):
         userOTP = OTP.objects.filter(email=data["email"])

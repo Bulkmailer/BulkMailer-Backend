@@ -159,7 +159,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://bulk-mailer-si.azurewebsites.net/'
+    'https://bulk-mailer-si.azurewebsites.net'
 ]
 
 SIMPLE_JWT = {

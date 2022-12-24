@@ -49,6 +49,6 @@ class check(APIView):
    permission_classes = [IsAuthenticated,]
    
    def post(self,request):
-       return Response({'msg':'hogaya login'})
+       return Response({'msg':'login'})
        
     
