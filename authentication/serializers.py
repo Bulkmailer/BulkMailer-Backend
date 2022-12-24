@@ -25,6 +25,7 @@ class OTP_Serializer(serializers.ModelSerializer):
             )
         try:    
             New_User_Resgistration.objects.get(email=email)
+            print('hee')
             raise ValidationError(
                 {'msg':'User already exists'}
             )
@@ -101,7 +102,7 @@ class NewUserSerializer(serializers.ModelSerializer):
                 )
             return data
     def create(self, data):
-            userOTP = OTP.objects.get(email=data)
+            userOTP = OTP.objects.get(email=data['email'])
             user = New_User_Resgistration.objects.create(name=data['name'],user_name=data['user_name'],email=data['email'],password=data['password'])
             user.password = make_password(data['password'])
             user.is_active = True
