@@ -40,11 +40,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "authentication.apps.AuthenticationConfig",
+    "mailer.apps.MailerConfig",
     
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist'
+    'rest_framework_simplejwt.token_blacklist',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -91,7 +93,7 @@ DATABASES = {
        'USER': os.environ.get('DBUSER'),
        'PASSWORD': os.environ.get('DBPASS'),
        'HOST': os.environ.get('DBHOST'),
-       'PORT': '5432'
+       'PORT': '6722'
    }
 }
 
@@ -142,6 +144,9 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.MultiPartParser',
+    ]
 }
 
 AUTH_USER_MODEL = 'authentication.New_User_Resgistration'
@@ -159,7 +164,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://bulk-mailer-si.azurewebsites.net/'
+    'https://bulk-mailer-si.azurewebsites.net'
 ]
 
 SIMPLE_JWT = {

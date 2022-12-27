@@ -104,7 +104,7 @@ class OTP(models.Model):
          return self.email
 
 @receiver(pre_save, sender=New_User_Resgistration)
-def revoke_tokens(sender, instance, update_fields, **kwargs):
+def revoke_tokens(sender, instance, **kwargs):
     if not instance._state.adding:
         existing_user = New_User_Resgistration.objects.get(pk=instance.pk)
         if instance.password != existing_user.password or instance.email != existing_user.email or instance.user_name != existing_user.user_name:

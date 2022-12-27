@@ -60,4 +60,8 @@ jobs:
         with:
           app-name: 'Bulk-mailer-SI'
           slot-name: 'Production'
+<<<<<<< HEAD
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_88976469713242CD93E75C1CBB7E27BA }}
+=======
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7C9D0236782B453BB4B1A9CCE5B0CB33 }}
+>>>>>>> e05b086de9a4cbc0ac4be11a78b005ce53886c2f

@@ -22,12 +22,12 @@ class OTP_Serializer(serializers.ModelSerializer):
         if not re.findall('@.', email):
             raise ValidationError(
                 ("Enter a valid email")
-            )
-        user = New_User_Resgistration.objects.filter(email=email)
-        if user is not None:
-            raise ValidationError(
-                {'msg':'User already exists'}
-            )
+            )  
+        user = list(New_User_Resgistration.objects.filter(email=email))
+        if user != []:
+                raise ValidationError(
+                    {'msg':'User already exists'}
+                )
         return data
     
     def create(self, data):
@@ -81,7 +81,7 @@ class NewUserSerializer(serializers.ModelSerializer):
     def validate_password(self,data):
             if len(data) < 8 or not re.findall('\d', data) or not re.findall('[A-Z]', data) or not re.findall('[a-z]', data) or not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', data):
                 raise ValidationError(
-                    ("The password needs to be more than 8 characters, contain atleast one uppercase,one lowercase and a special character")
+                    {'msg':"The password needs to be more than 8 characters, contain atleast one uppercase,one lowercase and a special character"}
                 )
 
             return data
@@ -100,7 +100,7 @@ class NewUserSerializer(serializers.ModelSerializer):
                 )
             return data
     def create(self, data):
-            userOTP = OTP.objects.get(email=data)
+            userOTP = OTP.objects.get(email=data['email'])
             user = New_User_Resgistration.objects.create(name=data['name'],user_name=data['user_name'],email=data['email'],password=data['password'])
             user.password = make_password(data['password'])
             user.is_active = True
@@ -163,7 +163,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
                   
          if len(newPassword) < 8 or not re.findall('\d', newPassword) or not re.findall('[A-Z]', newPassword) or not re.findall('[a-z]', newPassword) or not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', newPassword):
                 raise ValidationError(
-                    "The password needs to be more than 8 characters, contain atleast one uppercase,one lowercase and a special character"
+                    {'msg':"The password needs to be more than 8 characters, contain atleast one uppercase,one lowercase and a special character"}
                 )
          user = authenticate(email=userEmail, password=newPassword)
          
@@ -190,7 +190,13 @@ class ResetPasswordViewOTPSerializer(serializers.ModelSerializer):
         email = data['email']
         if not re.findall('@.', email):
             raise ValidationError(
-                ("Enter a valid email")
+                {'msg': "Enter a valid email"}
+            )
+        try:
+            New_User_Resgistration.objects.get(email=email)
+        except:
+            raise ValidationError(
+                {'msg':'User Does not exists with the given email'}
             )
         return data
     
