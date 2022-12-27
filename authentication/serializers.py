@@ -25,7 +25,6 @@ class OTP_Serializer(serializers.ModelSerializer):
             )
         try:    
             New_User_Resgistration.objects.get(email=email)
-            print('hee')
             raise ValidationError(
                 {'msg':'User already exists'}
             )
@@ -193,6 +192,12 @@ class ResetPasswordViewOTPSerializer(serializers.ModelSerializer):
         if not re.findall('@.', email):
             raise ValidationError(
                 ("Enter a valid email")
+            )
+        try:
+            New_User_Resgistration.objects.get(email=email)
+        except:
+            raise ValidationError(
+                {'msg':'User Does not exists with the given email'}
             )
         return data
     

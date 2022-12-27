@@ -45,10 +45,5 @@ class Password_Change_View(generics.GenericAPIView, mixins.UpdateModelMixin):
         self.update(request,*args, **kwargs)
         return Response({'msg':'Password Change Successfullly'},status=status.HTTP_200_OK)
 
-class check(APIView):
-   permission_classes = [IsAuthenticated,]
-   
-   def post(self,request):
-       return Response({'msg':'login'})
        
     

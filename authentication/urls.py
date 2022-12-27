@@ -10,5 +10,4 @@ urlpatterns = [
     path('login/', Login.as_view()),
     path('otp_reset_password/', Reset_Password_OTP_View.as_view()),
     path('enter_new_password/', Password_Change_View.as_view()),
-    path('check/', check.as_view())
 ]
