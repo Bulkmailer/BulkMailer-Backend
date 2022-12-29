@@ -21,6 +21,8 @@ class CreateGroup(generics.CreateAPIView,generics.ListAPIView):
             return self.create(request)
         
 class BulkAddEmail(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request, *args, **kwargs):
         file = request.FILES['file']
         group = request.data.get('group')
