@@ -4,6 +4,7 @@ from mailer.serializers import *
 from . models import *
 from rest_framework.permissions import IsAuthenticated
 from .models import *
+from tablib import Dataset
 
 # Create your views here.
         
@@ -19,7 +20,20 @@ class CreateGroup(generics.CreateAPIView,generics.ListAPIView):
             request.data['user'] = request.user.id
             return self.create(request)
         
-class BulkAddEmail(generics.CreateAPIView):
-        permission_classes = [IsAuthenticated]
-        serializer_class = BulkDataADD
+class BulkAddEmail(generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        file = request.FILES['file']
+        group = request.data.get('group')
+        groups = Groups.objects.get(id=group)
+        df = pd.read_csv(file)
+        df["group"] = int(groups.id)
+        group_resouses =  GroupResource()
+        dataset = Dataset().load(df)
         
+        result = group_resouses.import_data(dataset,\
+             dry_run=True, raise_errors = True)
+        if not result.has_errors():
+            result = group_resouses.import_data(dataset, dry_run=False)
+            return Response({"msg": "Data Imported Successfully"})
+        return Response({"msg": "Not Imported Data"},\
+                 status=status.HTTP_400_BAD_REQUEST)
