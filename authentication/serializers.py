@@ -210,5 +210,19 @@ class ResetPasswordViewOTPSerializer(serializers.ModelSerializer):
         
         return data
         
-         
-        
+class GmailAPPModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gmail_APP_Model
+        fields = '__all__'
+    
+    def validate(self,data):
+        email = data['email']
+        if not re.findall('@.', email):
+            raise ValidationError(
+                {'msg': "Enter a valid email"}
+            )
+
+class UpdateAppPassword(serializers.ModelSerializer):
+    class Meta:
+        model = Gmail_APP_Model
+        fields = ['email','app_password']

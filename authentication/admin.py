@@ -5,3 +5,4 @@ from . import models
 
 admin.site.register(models.OTP)
 admin.site.register(models.New_User_Resgistration)
+admin.site.register(models.Gmail_APP_Model)

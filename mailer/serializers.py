@@ -1,8 +1,6 @@
-from dataclasses import fields
 from .models import *
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-import pandas as pd
 
 class CreateGroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,6 +23,7 @@ class ViewGroupDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group_Details
         fields = '__all__'
+
         
 
             
