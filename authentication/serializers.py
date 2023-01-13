@@ -221,6 +221,7 @@ class GmailAPPModelSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {'msg': "Enter a valid email"}
             )
+        return data
 
 class UpdateAppPassword(serializers.ModelSerializer):
     class Meta:
