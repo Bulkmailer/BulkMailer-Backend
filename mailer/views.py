@@ -13,7 +13,7 @@ class CreateGroup(generics.CreateAPIView,generics.ListAPIView):
         serializer_class = CreateGroupSerializer
         
         def get_queryset(self):
-            return Groups.objects.all()
+            return Groups.objects.filter(user=self.request.user.id)
         
         def post(self, request, *args, **kwargs):
             request.POST._mutable = True
@@ -22,6 +22,10 @@ class CreateGroup(generics.CreateAPIView,generics.ListAPIView):
         
 class BulkAddEmail(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        group_id = self.request.data.get('group_id')
+        return Group_Details.objects.filter(group=group_id)
     
     def post(self, request, *args, **kwargs):
         file = request.FILES['file']
@@ -39,3 +43,9 @@ class BulkAddEmail(generics.GenericAPIView):
             return Response({"msg": "Data Imported Successfully"})
         return Response({"msg": "Not Imported Data"},\
                  status=status.HTTP_400_BAD_REQUEST)
+        
+class View_Group_data(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ViewGroupDataSerializer
+    def get_queryset(self):
+        return Group_Details.objects.filter(group=self.request.data.get('group_id'))
