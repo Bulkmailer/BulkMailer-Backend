@@ -49,3 +49,9 @@ class View_Group_data(generics.ListAPIView):
     serializer_class = ViewGroupDataSerializer
     def get_queryset(self):
         return Group_Details.objects.filter(group=self.request.data.get('group_id'))
+
+class Add_Contact_Manually(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AddContactsManuallySerializer
+    
+    

@@ -37,9 +37,9 @@ class MyUserManager(BaseUserManager):
 
 class New_User_Resgistration(AbstractBaseUser):
    GENDER = (
-        ('M', 'Male'),
-        ('F', 'Female'),
-        ('O', 'Others')
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Others', 'Others')
     )
     
    email = models.EmailField(verbose_name='email address',
@@ -48,8 +48,8 @@ class New_User_Resgistration(AbstractBaseUser):
         validators=[EmailValidator()])
    name = models.CharField(max_length=150, default=None)
    user_name = models.CharField(max_length=150, blank=True, null=True, default=None, unique=True)
-   gender = models.CharField(max_length=1, choices=GENDER, blank=False,default="M")
-   mobile = models.BigIntegerField(blank=True,default=91)
+   gender = models.CharField(max_length=10, choices=GENDER, blank=False,null=True)
+   mobile = models.BigIntegerField(blank=True,null=True)
    is_active = models.BooleanField(default=True)
    is_admin = models.BooleanField(default=False)
 

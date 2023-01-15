@@ -227,3 +227,14 @@ class UpdateAppPassword(serializers.ModelSerializer):
     class Meta:
         model = Gmail_APP_Model
         fields = ['email','app_password']
+
+class ProfileDetailsUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = New_User_Resgistration
+        fields = ['email','name','user_name','gender','mobile']
+        
+        extra_kwargs={
+            'email':{'read_only': True},
+        }
+        
+        
