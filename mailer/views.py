@@ -5,6 +5,7 @@ from . models import *
 from rest_framework.permissions import IsAuthenticated
 from .models import *
 from tablib import Dataset
+from . massmailer import send_custom_mass_mail
 
 # Create your views here.
         
@@ -54,4 +55,15 @@ class Add_Contact_Manually(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AddContactsManuallySerializer
     
+class SendMassMail(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, *args, **kwargs):
+        _from = request.data.get('from')
+        _group = request.data.get('group')
+        _company = request.data.get('company')
+        _body = request.data.get('body')
+
+        send_custom_mass_mail(_from,_group,_company,_body)
+        return Response({'done'})
     
