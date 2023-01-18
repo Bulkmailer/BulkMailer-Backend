@@ -47,7 +47,7 @@ class Password_Change_View(generics.GenericAPIView, mixins.UpdateModelMixin):
         return Response({'msg':'Password Change Successfullly'},status=status.HTTP_200_OK)
 
 # Gmail APP Password Add and get APIs
-class Add_Gmail_Pass(generics.CreateAPIView, generics.ListAPIView):
+class Add_Gmail_Pass(generics.CreateAPIView, generics.ListAPIView, generics.UpdateAPIView):
     serializer_class = GmailAPPModelSerializer
     permission_classes = [IsAuthenticated]
     
@@ -58,6 +58,7 @@ class Add_Gmail_Pass(generics.CreateAPIView, generics.ListAPIView):
         request.POST._mutable = True
         request.data['user'] = request.user.id
         return self.create(request)
+        
 
 # Gmail APP Password Update API
 class Update_APP_Password(generics.GenericAPIView, mixins.UpdateModelMixin):
@@ -74,6 +75,7 @@ class Update_APP_Password(generics.GenericAPIView, mixins.UpdateModelMixin):
         return Response({'msg':'APP Password Change Successfullly'},status=status.HTTP_200_OK)
 
 #Profile Details Get and Update APIs
+
 class Profile_details(generics.ListAPIView, mixins.UpdateModelMixin):
     serializer_class = ProfileDetailsUpdateSerializer
     permission_classes = [IsAuthenticated]

@@ -1,3 +1,4 @@
+from ast import Delete
 from rest_framework import generics,status,mixins
 from rest_framework.response import Response
 from mailer.serializers import *
@@ -9,7 +10,7 @@ from . massmailer import send_custom_mass_mail
 
 # Create your views here.
         
-class CreateGroup(generics.CreateAPIView,generics.ListAPIView):
+class CreateGroup(generics.CreateAPIView,generics.ListAPIView,generics.DestroyAPIView):
         permission_classes = [IsAuthenticated]
         serializer_class = CreateGroupSerializer
         
@@ -20,6 +21,9 @@ class CreateGroup(generics.CreateAPIView,generics.ListAPIView):
             request.POST._mutable = True
             request.data['user'] = request.user.id
             return self.create(request)
+        def delete(self,request):
+            Groups.objects.get(id=request.data.get('id')).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         
 class BulkAddEmail(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
@@ -45,11 +49,14 @@ class BulkAddEmail(generics.GenericAPIView):
         return Response({"msg": "Not Imported Data"},\
                  status=status.HTTP_400_BAD_REQUEST)
         
-class View_Group_data(generics.ListAPIView):
+class View_Group_data(generics.ListAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ViewGroupDataSerializer
     def get_queryset(self):
-        return Group_Details.objects.filter(group=self.request.data.get('group_id'))
+        return Group_Details.objects.filter(group=self.request.GET.get('group_id'))
+    def patch(self, request, *args, **kwargs):
+        self.update(request,*args, **kwargs)
+        return Response({"status": "Profile Updated Successfully."}, status=status.HTTP_200_OK)
 
 class Add_Contact_Manually(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]

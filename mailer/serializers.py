@@ -28,6 +28,7 @@ class AddContactsManuallySerializer(serializers.ModelSerializer):
     class Meta:
         model = Group_Details
         fields = '__all__'
+
         
 
             

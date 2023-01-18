@@ -222,19 +222,43 @@ class GmailAPPModelSerializer(serializers.ModelSerializer):
                 {'msg': "Enter a valid email"}
             )
         return data
-
+        
 class UpdateAppPassword(serializers.ModelSerializer):
     class Meta:
         model = Gmail_APP_Model
         fields = ['email','app_password']
+    
+    def validated(self,data):
+        email = data['email']
+        
+        try:
+            appGmail = Gmail_APP_Model.objects.get(email=email)
+        except:
+            raise ValidationError({
+                'msg':'App Password with this email does not exists'
+            })
+        
+        if appGmail.app_password == data['app_password']:
+            raise ValidationError(
+                {'msg':'Password is same as old one'}
+            )
+        return data
 
 class ProfileDetailsUpdateSerializer(serializers.ModelSerializer):
+    AppPassword = serializers.SerializerMethodField()
     class Meta:
         model = New_User_Resgistration
-        fields = ['email','name','user_name','gender','mobile']
+        fields = ['email','name','user_name','gender','mobile','AppPassword']
         
         extra_kwargs={
             'email':{'read_only': True},
         }
+    def get_AppPassword(self,obj):
+        try:
+            Gmail_APP_Model.objects.get(id=obj.id)
+            return True
+        except:
+            return False
+            
         
         
