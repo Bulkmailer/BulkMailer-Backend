@@ -48,12 +48,10 @@ def send_custom_mass_mail(self,_from,_group,_subject,_company,_body,file,_templa
         password=appGmail.app_password,
     )
     messages = []
-    print('agaya')
     
     by = appGmail.email
     
     if _company is not None:
-        print('skns')
         by = f'{_company} <{appGmail.email}>'
         
     print(_subject,_body)

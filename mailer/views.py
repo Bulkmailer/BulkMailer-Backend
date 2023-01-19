@@ -11,7 +11,8 @@ import pytz
 from authentication.task import *
 
 # Create your views here.
-        
+     
+# Create Group API       
 class CreateGroup(generics.CreateAPIView,generics.ListAPIView,generics.DestroyAPIView):
         permission_classes = [IsAuthenticated]
         serializer_class = CreateGroupSerializer
@@ -26,7 +27,8 @@ class CreateGroup(generics.CreateAPIView,generics.ListAPIView,generics.DestroyAP
         def delete(self,request):
             Groups.objects.get(id=request.data.get('id')).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        
+
+# Bulk Upload of Data in Group      
 class BulkAddEmail(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     
@@ -50,7 +52,8 @@ class BulkAddEmail(generics.GenericAPIView):
             return Response({"msg": "Data Imported Successfully"})
         return Response({"msg": "Not Imported Data"},\
                  status=status.HTTP_400_BAD_REQUEST)
-        
+
+# View Group Details and Update API        
 class View_Group_data(generics.ListAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ViewGroupDataSerializer
@@ -60,10 +63,12 @@ class View_Group_data(generics.ListAPIView, generics.UpdateAPIView):
         self.update(request,*args, **kwargs)
         return Response({"status": "Profile Updated Successfully."}, status=status.HTTP_200_OK)
 
+# ADD Contacts Manually API
 class Add_Contact_Manually(generics.CreateAPIView,generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AddContactsManuallySerializer
-    
+
+# Send Mail Immediately API
 class SendMassMail(generics.CreateAPIView,generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = MassMailSerializer
@@ -76,8 +81,8 @@ class SendMassMail(generics.CreateAPIView,generics.ListAPIView):
         request.data['user'] = request.user.id
         return self.create(request)
     
-
-class SchedulingMail(generics.CreateAPIView, generics.ListAPIView):
+#Scheduled Mail API
+class SchedulingMailAPI(generics.CreateAPIView, generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ScheduleMailSerializer
     
