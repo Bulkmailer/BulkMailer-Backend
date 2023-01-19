@@ -9,6 +9,7 @@ from . mail import send_otp
 from datetime import timedelta
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
+from . task import *
 
 
 
@@ -37,7 +38,8 @@ class OTP_Serializer(serializers.ModelSerializer):
             userOTP.delete()
         email = data['email']
         OTP.objects.create(email=email)
-        send_otp(email)
+        send_otp.delay(email)
+        # send_otp(email)
         
         return data
 

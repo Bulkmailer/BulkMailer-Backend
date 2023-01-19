@@ -4,6 +4,7 @@ from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 admin.site.register(models.Groups)
+admin.site.register(models.Template)
 
 @admin.register(models.Group_Details)
 class PersonAdmin(ImportExportModelAdmin):

@@ -7,6 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 from .models import *
 from tablib import Dataset
 from . massmailer import send_custom_mass_mail
+from datetime import datetime
+import pytz
+# from authentication.task import *
 
 # Create your views here.
         
@@ -58,7 +61,7 @@ class View_Group_data(generics.ListAPIView, generics.UpdateAPIView):
         self.update(request,*args, **kwargs)
         return Response({"status": "Profile Updated Successfully."}, status=status.HTTP_200_OK)
 
-class Add_Contact_Manually(generics.CreateAPIView):
+class Add_Contact_Manually(generics.CreateAPIView,generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AddContactsManuallySerializer
     
@@ -70,7 +73,30 @@ class SendMassMail(generics.CreateAPIView):
         _group = request.data.get('group')
         _company = request.data.get('company')
         _body = request.data.get('body')
-
+        # send_custom_mass_mail.apply_async(args = [_from,_group,_company,_body])
         send_custom_mass_mail(_from,_group,_company,_body)
-        return Response({'done'})
-    
+        return Response({'msg':'Done'})
+
+class SchedulingMail(generics.CreateAPIView):
+    def post(self, request, *args, **kwargs):
+        _from = request.data.get('from')
+        _group = request.data.get('group')
+        _company = request.data.get('company')
+        _body = request.data.get('body')
+        _year = int(request.data.get('year'))
+        _month = int(request.data.get('month'))
+        _date = int(request.data.get('date'))
+        _hour = int(request.data.get('hour'))
+        _minute = int(request.data.get('minute'))
+        
+        print(datetime.now())
+        asia_tz = pytz.timezone('Asia/kolkata')
+        asia_dt = asia_tz.localize(datetime(_year, _month, _date, _hour, _minute))
+        etaTimezone = asia_dt.astimezone(pytz.UTC)
+        print(etaTimezone)
+        print(datetime
+              .utcnow())
+        send_custom_mass_mail.apply_async(args = [_from,_group,_company,_body], eta=etaTimezone)
+        
+        return Response({'msg':'schedule done'})
+        

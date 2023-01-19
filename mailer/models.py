@@ -34,3 +34,9 @@ class GroupResource(resources.ModelResource):
 
     class Meta:
         model = Group_Details
+
+class Template(models.Model):
+    template = models.TextField()
+    
+    def __str__(self):
+        return self.template
