@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.core.mail.message import EmailMultiAlternatives
 from django.core.mail import get_connection
 from mailer.models import *
+import re
 
 from mailer.models import Group_Details
 @shared_task(bind=True)
@@ -28,7 +29,7 @@ def send_otp(self,email):
     return 'Done'
 
 @shared_task(bind=True)
-def send_custom_mass_mail(self,_from,_group,_company,_body):
+def send_custom_mass_mail(self,_from,_group,_subject,_company,_body,file,_template):
 
     
     groups = Group_Details.objects.filter(group=_group)
@@ -36,8 +37,10 @@ def send_custom_mass_mail(self,_from,_group,_company,_body):
     datatuple = [{'name':group.name,'email':group.email} for group in groups]
     print(appGmail.email, appGmail.app_password)
     
-    html = str(Template.objects.get(id=1))
-    print(groups)
+    html = ''
+    
+    if _template is not None:
+        html = str(Template.objects.get(id=_template))
 
     connections = get_connection(
         username=appGmail.email,
@@ -47,17 +50,26 @@ def send_custom_mass_mail(self,_from,_group,_company,_body):
     messages = []
     print('agaya')
     
-    by = f'{_company} <{_from}>'
+    by = appGmail.email
     
+    if _company is not None:
+        print('skns')
+        by = f'{_company} <{appGmail.email}>'
+        
+    print(_subject,_body)
     
     for recipient in datatuple:
-         msg = EmailMultiAlternatives("testing Email", "testing",by, [recipient["email"]] , connection=connections)
-         formattedHtml = html.format(name=recipient["name"])
-         msg.attach_alternative(formattedHtml, "text/html")
-         messages.append(msg)
-    print('asjbaskj')
+         msg = EmailMultiAlternatives(_subject, _body,by, [recipient["email"]] , connection=connections)
+         if _template is not None:
+             if re.findall('{name}',html):
+                print(re.findall('{name}',html))
+                html = html.format(name=recipient["name"])
+             msg.attach_alternative(html, "text/html")
          
-
+         if file != 'None':
+             msg.attach_file(file)
+         
+         messages.append(msg)
     print(messages)
     return connections.send_messages(messages)
 

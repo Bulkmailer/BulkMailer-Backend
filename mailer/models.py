@@ -1,3 +1,4 @@
+from distutils.command import upload
 from django.db import models
 from authentication.models import *
 from import_export import resources
@@ -40,3 +41,39 @@ class Template(models.Model):
     
     def __str__(self):
         return self.template
+
+class SentMail(models.Model):
+    user = models.ForeignKey(New_User_Resgistration, on_delete=models.CASCADE)
+    _from = models.CharField(max_length=200)
+    _group = models.CharField(max_length=200)
+    _company = models.CharField(max_length=200, null=True, blank=True)
+    _body = models.CharField(max_length=200, null=True, blank=True)
+    _subject = models.CharField(max_length=200)
+    _template = models.CharField(max_length=200, null=True, blank=True)
+    _file = models.FileField(upload_to="media",null=True, blank=True)
+    _image = models.ImageField(upload_to="media",null=True, blank=True)
+    time = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f'{self.user.name} -- {self._subject}'
+    
+
+class SchedulingMail(models.Model):
+    user = models.ForeignKey(New_User_Resgistration, on_delete=models.CASCADE)
+    _from = models.CharField(max_length=200)
+    _group = models.CharField(max_length=200)
+    _company = models.CharField(max_length=200, null=True, blank=True)
+    _body = models.CharField(max_length=200, null=True, blank=True)
+    _subject = models.CharField(max_length=200)
+    _template = models.CharField(max_length=200, null=True, blank=True)
+    _file = models.FileField(upload_to="media",null=True, blank=True)
+    _image = models.ImageField(upload_to="media",null=True, blank=True)
+    _year = models.IntegerField(max_length=10)
+    _month = models.IntegerField(max_length=10)
+    _date = models.IntegerField(max_length=10)
+    _hour = models.IntegerField(max_length=10)
+    _minute = models.IntegerField(max_length=10)
+    time = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f'{self.user.name} -- {self._subject}'
