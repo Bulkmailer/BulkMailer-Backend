@@ -6,9 +6,9 @@ from . models import *
 from rest_framework.permissions import IsAuthenticated
 from .models import *
 from tablib import Dataset
-from datetime import datetime
 import pytz
 from authentication.task import *
+from bulkmailer.celery import app
 
 # Create your views here.
      
@@ -54,7 +54,7 @@ class BulkAddEmail(generics.GenericAPIView):
                  status=status.HTTP_400_BAD_REQUEST)
 
 # View Group Details and Update API        
-class View_Group_data(generics.ListAPIView, generics.UpdateAPIView):
+class View_Group_data(generics.ListAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ViewGroupDataSerializer
     def get_queryset(self):
@@ -62,6 +62,9 @@ class View_Group_data(generics.ListAPIView, generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         self.update(request,*args, **kwargs)
         return Response({"status": "Profile Updated Successfully."}, status=status.HTTP_200_OK)
+    def delete(self,request):
+        Group_Details.objects.get(id=request.data.get('id')).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ADD Contacts Manually API
 class Add_Contact_Manually(generics.CreateAPIView,generics.UpdateAPIView):
@@ -82,7 +85,7 @@ class SendMassMail(generics.CreateAPIView,generics.ListAPIView):
         return self.create(request)
     
 #Scheduled Mail API
-class SchedulingMailAPI(generics.CreateAPIView, generics.ListAPIView):
+class SchedulingMailAPI(generics.CreateAPIView, generics.ListAPIView, generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ScheduleMailSerializer
     
@@ -93,3 +96,10 @@ class SchedulingMailAPI(generics.CreateAPIView, generics.ListAPIView):
         request.POST._mutable = True
         request.data['user'] = request.user.id
         return self.create(request)
+    def delete(self,request):
+        scheduledMail = request.data.get('id')
+        taskID = SchedulingMail.objects.get(id=scheduledMail).celeryID
+        print(taskID)
+        app.control.revoke(taskID)
+        SchedulingMail.objects.get(id=scheduledMail).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

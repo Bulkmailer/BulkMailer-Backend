@@ -16,9 +16,11 @@ from datetime import timedelta
 import dotenv
 dotenv.read_dotenv()
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -51,6 +53,7 @@ INSTALLED_APPS = [
     'django.conf',
     'import_export',
     'django_celery_results',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [

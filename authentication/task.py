@@ -8,7 +8,9 @@ from django.utils import timezone
 from django.core.mail.message import EmailMultiAlternatives
 from django.core.mail import get_connection
 from mailer.models import *
-import re
+from django_celery_results.models import TaskResult
+from django_celery_results.backends.cache import CacheBackend
+
 
 from mailer.models import Group_Details
 @shared_task(bind=True)
@@ -68,10 +70,39 @@ def send_custom_mass_mail(self,_from,_group,_subject,_company,_body,file,_templa
              msg.attach_file(file)
          
          messages.append(msg)
-    print(messages)
+
     return connections.send_messages(messages)
 
 
+@shared_task(bind=True)
+def status_update(self):
+    pending_task_id = SentMail.objects.filter(status='PENDING')
+            
+    scheduling_task_id = SchedulingMail.objects.filter(status='PENDING')
+    print(pending_task_id)
+    for i in pending_task_id:
+        try :
+            celery_id = TaskResult.objects.get(task_id=i.celeryID)
+            i.status = celery_id.status
+            print(celery_id.status)
+            i.save()
+            
+        except:
+            i.status = 'PENDING'
+    
+    for i in scheduling_task_id:
+        try :
+            celery_id = TaskResult.objects.get(task_id=i.celeryID)
+            i.status = celery_id.status
+            print(celery_id.status)
+            i.save()
+            
+        except:
+            i.status = 'PENDING'
+        
+    return 'Done'
+        
+    
 
     
     

@@ -19,7 +19,7 @@ class Group_Details(models.Model):
         ('Others', 'Others')
     )
     group = models.ForeignKey(Groups, on_delete=models.CASCADE, null=True)
-    email = models.CharField(max_length=200)
+    email = models.CharField(max_length=200, unique=True)
     name = models.CharField(max_length=200,null=True)
     gender = models.CharField(max_length=200, choices=GENDER, blank=False)
     
@@ -53,6 +53,8 @@ class SentMail(models.Model):
     _file = models.FileField(upload_to="media",null=True, blank=True)
     _image = models.ImageField(upload_to="media",null=True, blank=True)
     time = models.DateTimeField(auto_now=True)
+    celeryID = models.CharField(max_length=200,null=True,blank=True) 
+    status = models.CharField(max_length=200,default="Pending")
     
     def __str__(self):
         return f'{self.user.name} -- {self._subject}'
@@ -68,12 +70,14 @@ class SchedulingMail(models.Model):
     _template = models.CharField(max_length=200, null=True, blank=True)
     _file = models.FileField(upload_to="media",null=True, blank=True)
     _image = models.ImageField(upload_to="media",null=True, blank=True)
-    _year = models.IntegerField(max_length=10)
-    _month = models.IntegerField(max_length=10)
-    _date = models.IntegerField(max_length=10)
-    _hour = models.IntegerField(max_length=10)
-    _minute = models.IntegerField(max_length=10)
+    _year = models.IntegerField()
+    _month = models.IntegerField()
+    _date = models.IntegerField()
+    _hour = models.IntegerField()
+    _minute = models.IntegerField()
     time = models.DateTimeField(auto_now=True)
+    celeryID = models.CharField(max_length=200,null=True,blank=True) 
+    status = models.CharField(max_length=200,default="PENDING")
     
     def __str__(self):
         return f'{self.user.name} -- {self._subject}'
