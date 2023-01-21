@@ -31,11 +31,7 @@ SECRET_KEY = "django-insecure-16yor6r^23fv89x)urhurhu@wpo5v*l70#^f_-7=rc(jm%nl#9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-<<<<<<< HEAD
-ALLOWED_HOSTS = ['bulk-mailer-backend-production.up.railway.app']
-=======
 ALLOWED_HOSTS = ['*']
->>>>>>> celery
 
 
 # Application definition
@@ -101,17 +97,10 @@ WSGI_APPLICATION = "bulkmailer.wsgi.application"
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-<<<<<<< HEAD
-       'NAME': 'railway',
-       'USER': os.environ.get('DB_USER'),
-       'PASSWORD': os.environ.get('DB_PASSWORD'),
-       'HOST': 'containers-us-west-125.railway.app',
-=======
        'NAME': os.environ.get('DB_NAME'),
        'USER': os.environ.get('DB_USER'),
        'PASSWORD': os.environ.get('DB_PASS'),
        'HOST': os.environ.get('DB_HOST'),
->>>>>>> celery
        'PORT': '7195'
    }
 }
