@@ -11,7 +11,7 @@ def send_otp(email):
     text  = f'Your One Time Password for verification on Bulk-Mailer is {otp}.\nValid for only 2 minutes.\n DO NOT SHARE IT WITH ANYBODY.\nSKILL EDGE'
     style = f'<p>Your One Time Password for verification on Bulk-Mailer is <strong style="font-size: 18px;">{otp}</strong>.</p><p>Valid for only 2 minutes.</p><p style="font-size: 18px;">DO NOT SHARE IT WITH ANYBODY.</p><div style="text-align:center; font-size:40px; color:grey; margin-top:20px;"><strong>BULK MAILER</strong></div>'
     email_by = settings.EMAIL_HOST
-    otp_msg = EmailMultiAlternatives(subject, text,email_by,[email])
+    otp_msg = EmailMultiAlternatives(subject, text,f'SDC <{email_by}>',[email])
     otp_msg.attach_alternative(style, "text/html")
     otp_msg.send()
     OTP_user = OTP.objects.get(email=email)
