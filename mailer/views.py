@@ -40,6 +40,10 @@ class BulkAddEmail(generics.GenericAPIView):
         file = request.FILES['file']
         group = request.data.get('group')
         groups = Groups.objects.get(id=group)
+        
+        if group.user != request.user.id:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
         df = pd.read_csv(file)
         df["group"] = int(groups.id)
         group_resouses =  GroupResource()

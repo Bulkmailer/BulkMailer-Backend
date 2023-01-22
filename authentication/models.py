@@ -8,7 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
-
 # Create your models here.
 
 class MyUserManager(BaseUserManager):
@@ -41,6 +40,7 @@ class New_User_Resgistration(AbstractBaseUser):
         ('Female', 'Female'),
         ('Others', 'Others')
     )
+
     
    email = models.EmailField(verbose_name='email address',
         max_length=255,

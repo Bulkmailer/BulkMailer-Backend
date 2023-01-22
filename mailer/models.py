@@ -19,7 +19,7 @@ class Group_Details(models.Model):
         ('Others', 'Others')
     )
     group = models.ForeignKey(Groups, on_delete=models.CASCADE, null=True)
-    email = models.CharField(max_length=200, unique=True)
+    email = models.CharField(max_length=200)
     name = models.CharField(max_length=200,null=True)
     gender = models.CharField(max_length=200, choices=GENDER, blank=False)
     

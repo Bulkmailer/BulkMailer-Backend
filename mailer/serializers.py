@@ -33,6 +33,18 @@ class AddContactsManuallySerializer(serializers.ModelSerializer):
     class Meta:
         model = Group_Details
         fields = '__all__'
+    
+    def validate(self, data):
+        email = data['email']
+        group_details = Group_Details.objects.filter(group=data['group'])
+ 
+        
+        if  group_details.filter(email=email).exists():
+            raise ValidationError(
+                {'msg':'email already exists in this group'}
+            )
+        
+        return data
 
 class MassMailSerializer(serializers.ModelSerializer):
     class Meta:
