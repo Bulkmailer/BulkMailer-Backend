@@ -47,7 +47,7 @@ def send_custom_mass_mail(self,_from,_group,_subject,_company,_body,_template,ma
     
     if _template is not None:
         print(_template)
-        html = str(Template.objects.get(id=_template))
+        html = str(Template.objects.get(id=_template).template)
 
     connections = get_connection(
         username=appGmail.email,

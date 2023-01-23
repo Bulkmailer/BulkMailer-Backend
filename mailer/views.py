@@ -61,6 +61,8 @@ class BulkAddEmail(generics.GenericAPIView):
             return Response({"msg": "Not Imported Data"},\
                             status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    
 # View Group Details and Update API        
 class View_Group_data(generics.ListAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
@@ -93,8 +95,14 @@ class SendMassMail(generics.CreateAPIView,generics.ListAPIView, generics.UpdateA
         mail = SentMail.objects.get(id=mailID)
         return mail
     
-    def get_queryset(self):
-        return SentMail.objects.filter(user=self.request.user.id)
+    def get(self,request):
+        mailType = request.GET.data("schedulmail")
+        if mailType == True:
+            data = SentMail.objects.filter(scheduleMail=True).order_by('-id')
+        else:
+            data = SentMail.objects.filter(scheduleMail=False).order_by('-id')
+        serializer = self.serializer_class(data, many=True)
+        return Response({serializer.data},status=status.HTTP_200_OK)
     
     def post(self, request, *args, **kwargs):
         request.POST._mutable = True
@@ -121,3 +129,10 @@ class FileUploadModelView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         if request.data["file"]:
             return super().post(request, *args, **kwargs)
+
+class TemplateView(generics.CreateAPIView,generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TemplateSerializer
+    
+    def get_queryset(self):
+        return Template.objects.all().order_by('-1')

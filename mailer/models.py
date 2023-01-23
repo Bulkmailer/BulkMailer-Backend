@@ -37,6 +37,7 @@ class GroupResource(resources.ModelResource):
         model = Group_Details
 
 class Template(models.Model):
+    name = models.CharField(max_length=200)
     template = models.TextField()
     
     def __str__(self):

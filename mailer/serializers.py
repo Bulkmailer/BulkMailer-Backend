@@ -86,3 +86,8 @@ class FileUploadSerializer(serializers.ModelSerializer):
             files = [FileUploadForMail(mail=mail, file=file) for file in file_data['file']]
             FileUploadForMail.objects.bulk_create(files)
         return data
+
+class TemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Template
+        fields = '__all__'
