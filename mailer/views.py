@@ -1,14 +1,14 @@
-from ast import Delete
-from rest_framework import generics,status,mixins
+from rest_framework import generics,status
 from rest_framework.response import Response
 from mailer.serializers import *
 from . models import *
 from rest_framework.permissions import IsAuthenticated
 from .models import *
 from tablib import Dataset
-import pytz
+import pandas as pd
 from authentication.task import *
 from bulkmailer.celery import app
+
 
 # Create your views here.
      
@@ -41,28 +41,36 @@ class BulkAddEmail(generics.GenericAPIView):
         group = request.data.get('group')
         groups = Groups.objects.get(id=group)
         
-        if group.user != request.user.id:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        # print(groups.user.id, request.user.id)
+        
+        # if groups.user.id != request.user.id:
+        #     return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
         
         df = pd.read_csv(file)
         df["group"] = int(groups.id)
         group_resouses =  GroupResource()
         dataset = Dataset().load(df)
         
-        result = group_resouses.import_data(dataset,\
+        if 'email' in df.columns:
+            result = group_resouses.import_data(dataset,\
              dry_run=True, raise_errors = True)
-        if not result.has_errors():
-            result = group_resouses.import_data(dataset, dry_run=False)
-            return Response({"msg": "Data Imported Successfully"})
-        return Response({"msg": "Not Imported Data"},\
-                 status=status.HTTP_400_BAD_REQUEST)
-
+            if not result.has_errors():
+                result = group_resouses.import_data(dataset, dry_run=False)
+                return Response({"msg": "Data Imported Successfully"})
+            return Response({"msg": "Not Imported Data"},\
+                            status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 # View Group Details and Update API        
 class View_Group_data(generics.ListAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ViewGroupDataSerializer
-    def get_queryset(self):
-        return Group_Details.objects.filter(group=self.request.GET.get('group_id'))
+    def get(self,request):
+        groupData = Group_Details.objects.filter(group=request.GET.get('group_id')).order_by('-id')
+        serializer = self.serializer_class(groupData, many=True)
+        if groupData.count() == 0 :
+            return Response({'msg':'Nothing Found'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     def patch(self, request, *args, **kwargs):
         self.update(request,*args, **kwargs)
         return Response({"status": "Profile Updated Successfully."}, status=status.HTTP_200_OK)
@@ -76,9 +84,14 @@ class Add_Contact_Manually(generics.CreateAPIView,generics.UpdateAPIView):
     serializer_class = AddContactsManuallySerializer
 
 # Send Mail Immediately API
-class SendMassMail(generics.CreateAPIView,generics.ListAPIView):
+class SendMassMail(generics.CreateAPIView,generics.ListAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = MassMailSerializer
+    
+    def get_object(self):
+        mailID = self.request.data.get('id')
+        mail = SentMail.objects.get(id=mailID)
+        return mail
     
     def get_queryset(self):
         return SentMail.objects.filter(user=self.request.user.id)
@@ -88,22 +101,23 @@ class SendMassMail(generics.CreateAPIView,generics.ListAPIView):
         request.data['user'] = request.user.id
         return self.create(request)
     
-#Scheduled Mail API
-class SchedulingMailAPI(generics.CreateAPIView, generics.ListAPIView, generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = ScheduleMailSerializer
-    
-    def get_queryset(self):
-        return SchedulingMail.objects.filter(user=self.request.user.id)
-    
-    def post(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         request.POST._mutable = True
         request.data['user'] = request.user.id
-        return self.create(request)
+        self.update(request,*args,**kwargs)
+        return Response({"msg":"Mail has been updated"}, status=status.HTTP_200_OK)
+        
     def delete(self,request):
         scheduledMail = request.data.get('id')
-        taskID = SchedulingMail.objects.get(id=scheduledMail).celeryID
-        print(taskID)
+        taskID = SentMail.objects.get(id=scheduledMail).celeryID
         app.control.revoke(taskID)
-        SchedulingMail.objects.get(id=scheduledMail).delete()
+        SentMail.objects.get(id=scheduledMail).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class FileUploadModelView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class  = FileUploadSerializer
+    
+    def post(self, request, *args, **kwargs):
+        if request.data["file"]:
+            return super().post(request, *args, **kwargs)

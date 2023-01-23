@@ -44,40 +44,27 @@ class Template(models.Model):
 
 class SentMail(models.Model):
     user = models.ForeignKey(New_User_Resgistration, on_delete=models.CASCADE)
-    _from = models.CharField(max_length=200)
-    _group = models.CharField(max_length=200)
+    title = models.CharField(max_length=200,null=True,blank=True)
+    _from = models.CharField(max_length=200,null=True,blank=True)
+    _group = models.CharField(max_length=200,null=True,blank=True)
     _company = models.CharField(max_length=200, null=True, blank=True)
     _body = models.CharField(max_length=200, null=True, blank=True)
-    _subject = models.CharField(max_length=200)
+    _subject = models.CharField(max_length=200,null=True,blank=True)
     _template = models.CharField(max_length=200, null=True, blank=True)
-    _file = models.FileField(upload_to="media",null=True, blank=True)
     _image = models.ImageField(upload_to="media",null=True, blank=True)
-    time = models.DateTimeField(auto_now=True)
-    celeryID = models.CharField(max_length=200,null=True,blank=True) 
-    status = models.CharField(max_length=200,default="Pending")
-    
-    def __str__(self):
-        return f'{self.user.name} -- {self._subject}'
-    
-
-class SchedulingMail(models.Model):
-    user = models.ForeignKey(New_User_Resgistration, on_delete=models.CASCADE)
-    _from = models.CharField(max_length=200)
-    _group = models.CharField(max_length=200)
-    _company = models.CharField(max_length=200, null=True, blank=True)
-    _body = models.CharField(max_length=200, null=True, blank=True)
-    _subject = models.CharField(max_length=200)
-    _template = models.CharField(max_length=200, null=True, blank=True)
-    _file = models.FileField(upload_to="media",null=True, blank=True)
-    _image = models.ImageField(upload_to="media",null=True, blank=True)
-    _year = models.IntegerField()
-    _month = models.IntegerField()
-    _date = models.IntegerField()
-    _hour = models.IntegerField()
-    _minute = models.IntegerField()
+    scheduleMail = models.BooleanField(default=False)
+    _year = models.IntegerField(null=True,blank=True)
+    _month = models.IntegerField(null=True,blank=True)
+    _date = models.IntegerField(null=True,blank=True)
+    _hour = models.IntegerField(null=True,blank=True)
+    _minute = models.IntegerField(null=True,blank=True)
     time = models.DateTimeField(auto_now=True)
     celeryID = models.CharField(max_length=200,null=True,blank=True) 
     status = models.CharField(max_length=200,default="PENDING")
     
     def __str__(self):
         return f'{self.user.name} -- {self._subject}'
+
+class FileUploadForMail(models.Model):
+    mail = models.ForeignKey(SentMail, on_delete=models.CASCADE)
+    file = models.FileField(upload_to="media",null=True,blank=True)
