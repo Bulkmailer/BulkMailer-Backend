@@ -38,7 +38,8 @@ class GroupResource(resources.ModelResource):
 
 class Template(models.Model):
     name = models.CharField(max_length=200)
-    template = models.TextField()
+    template = models.TextField(default="null")
+    html_file = models.FileField(upload_to="media/template",null=True,blank=True)
     
     def __str__(self):
         return self.template

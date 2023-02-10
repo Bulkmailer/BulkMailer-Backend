@@ -1,3 +1,5 @@
+from urllib import request
+from venv import create
 from rest_framework import generics,status
 from rest_framework.response import Response
 from mailer.serializers import *
@@ -8,6 +10,7 @@ from tablib import Dataset
 import pandas as pd
 from authentication.task import *
 from bulkmailer.celery import app
+from bs4 import BeautifulSoup
 
 
 # Create your views here.
@@ -96,18 +99,20 @@ class SendMassMail(generics.CreateAPIView,generics.ListAPIView, generics.UpdateA
         return mail
     
     def get(self,request):
-        mailType = request.GET.data("schedulmail")
-        if mailType == True:
+        mailType = request.GET.get("schedulmail")
+        print(mailType)
+        data = SentMail.objects.filter(user=request.user.id)
+        if mailType == 'True':
             data = SentMail.objects.filter(scheduleMail=True).order_by('-id')
         else:
             data = SentMail.objects.filter(scheduleMail=False).order_by('-id')
         serializer = self.serializer_class(data, many=True)
-        return Response({serializer.data},status=status.HTTP_200_OK)
+        return Response(serializer.data,status=status.HTTP_200_OK)
     
     def post(self, request, *args, **kwargs):
         request.POST._mutable = True
         request.data['user'] = request.user.id
-        return self.create(request)
+        return self.create(request,*args, **kwargs)
     
     def patch(self, request, *args, **kwargs):
         request.POST._mutable = True
@@ -122,17 +127,32 @@ class SendMassMail(generics.CreateAPIView,generics.ListAPIView, generics.UpdateA
         SentMail.objects.get(id=scheduledMail).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class FileUploadModelView(generics.CreateAPIView):
+# File Upload For Mail API
+class FileUploadModelView(generics.CreateAPIView,generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class  = FileUploadSerializer
-    
+
+    def get_queryset(self):
+        return FileUploadForMail.objects.filter(mail=request.GET.get('mail'))
+        
     def post(self, request, *args, **kwargs):
         if request.data["file"]:
             return super().post(request, *args, **kwargs)
+    
+    def delete(self,request):
+        FileUploadForMail.objects.get(id=request.data.get('id')).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-class TemplateView(generics.CreateAPIView,generics.ListAPIView):
+# ADD, DELETE, GET API for Mail Template
+class TemplateView(generics.CreateAPIView,generics.ListAPIView,generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplateSerializer
     
     def get_queryset(self):
-        return Template.objects.all().order_by('-1')
+        return Template.objects.all().order_by('-id')
+    def post(self,request,*args, **kwargs):
+        return super().create(request, *args, **kwargs)
+    def delete(self,request):
+        Template.objects.get(id=request.data.get('id')).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+

@@ -39,7 +39,6 @@ class OTP_Serializer(serializers.ModelSerializer):
         email = data['email']
         OTP.objects.create(email=email)
         send_otp.delay(email)
-        # send_otp(email)
         
         return data
 
@@ -223,7 +222,12 @@ class GmailAPPModelSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {'msg': "Enter a valid email"}
             )
+        if  Gmail_APP_Model.objects.filter(email=email).count() != 0:
+            raise ValidationError(
+                {'msg': "Entered mail already exists"}
+            )
         return data
+        
         
 class UpdateAppPassword(serializers.ModelSerializer):
     class Meta:

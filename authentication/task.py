@@ -45,7 +45,7 @@ def send_custom_mass_mail(self,_from,_group,_subject,_company,_body,_template,ma
     html = ''
     
     
-    if _template is not None:
+    if _template is not None and _template != 'null':
         print(_template)
         html = str(Template.objects.get(id=_template).template)
 
@@ -65,16 +65,14 @@ def send_custom_mass_mail(self,_from,_group,_subject,_company,_body,_template,ma
     
     for recipient in datatuple:
          msg = EmailMultiAlternatives(_subject, _body,by, [recipient["email"]] , connection=connections)
-         if _template is not None:
+         if _template is not None and _template != 'null':
              formatedhtml = html
              if re.findall('{name}',html):
-                print(re.findall('{name}',html))
                 formatedhtml = html.format(name=recipient["name"])
              msg.attach_alternative(formatedhtml, "text/html")
         
          if file_attached.count() > 0:
             for file in file_attached:
-                print(file.file.name)
                 msg.attach_file(settings.MEDIA_ROOT + (f'/{file.file.name}'))
          messages.append(msg)
     return connections.send_messages(messages)

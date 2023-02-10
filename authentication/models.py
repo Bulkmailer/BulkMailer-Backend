@@ -91,7 +91,7 @@ class New_User_Resgistration(AbstractBaseUser):
 
 class Gmail_APP_Model(models.Model):
     user = models.ForeignKey(New_User_Resgistration, on_delete=models.CASCADE, null=True, blank=True)
-    email = models.CharField(max_length=200,unique=True)
+    email = models.CharField(max_length=200)
     app_password = models.CharField(max_length=200)
     
     def __str__(self):

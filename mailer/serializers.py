@@ -1,4 +1,5 @@
 from dataclasses import field, fields
+from re import template
 from .models import *
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
@@ -6,6 +7,8 @@ from authentication.task import *
 import pytz
 from datetime import datetime
 from bulkmailer.celery import app
+from bs4 import BeautifulSoup
+
 
 class CreateGroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,15 +53,16 @@ class AddContactsManuallySerializer(serializers.ModelSerializer):
 class MassMailSerializer(serializers.ModelSerializer):
     class Meta:
         model = SentMail
-        fields = ['id','user','_from','_group','_company','_body','_subject','_template','scheduleMail','_year','_month','_date','_hour','_minute','status','celeryID']
+        fields = ['id','user','_from','_group','_company','_body','_subject','_template','scheduleMail','_year','_month','_date','_hour','_minute','status','celeryID','title']
     
     def update(self, instance, data):
         mail = SentMail.objects.get(id=instance.id)
         if mail.celeryID is not None:
             app.control.revoke(mail.celeryID)
-        mail = SentMail.objects.update(**data)
+
+
+        instance = super(MassMailSerializer,self).update(instance, data)
         mail = SentMail.objects.get(id=instance.id)
-        
         if mail.scheduleMail == True:
             asia_tz = pytz.timezone('Asia/kolkata')
             asia_dt = asia_tz.localize(datetime(data['_year'], data['_month'], data['_date'], data['_hour'], data['_minute']))
@@ -68,16 +72,13 @@ class MassMailSerializer(serializers.ModelSerializer):
             celeryIDD = send_custom_mass_mail.apply_async(args = [mail._from,mail._group,mail._subject,mail._company,mail._body,mail._template,mail.id])
         mail.celeryID = celeryIDD.id
         mail.status = celeryIDD.status
-        print(celeryIDD)
-        print(celeryIDD.status)
-        print(celeryIDD.id)
         mail.save()
         return data
-
+    
 class FileUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileUploadForMail
-        fields = ['mail']
+        fields = '__all__'
     
     def create(self, data):
         file_data = dict(self.initial_data)
@@ -91,3 +92,15 @@ class TemplateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Template
         fields = '__all__'
+    
+    def create(self,data):
+        Template_object = Template.objects.create(**data)
+        if Template_object.template is None:
+            file = f"media/media/template/{data['html_file'].name}"
+            HTMLFile = open(file, "r")
+            index = HTMLFile.read()
+            S = BeautifulSoup(index, 'lxml')
+            print(S.body.prettify())
+            Template_object.template = S.body.prettify()
+            Template_object.save()
+        return data
