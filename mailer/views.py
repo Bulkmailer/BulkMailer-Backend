@@ -10,7 +10,6 @@ from tablib import Dataset
 import pandas as pd
 from authentication.task import *
 from bulkmailer.celery import app
-from bs4 import BeautifulSoup
 
 
 # Create your views here.
@@ -103,9 +102,9 @@ class SendMassMail(generics.CreateAPIView,generics.ListAPIView, generics.UpdateA
         print(mailType)
         data = SentMail.objects.filter(user=request.user.id)
         if mailType == 'True':
-            data = SentMail.objects.filter(scheduleMail=True).order_by('-id')
+            data = data.filter(scheduleMail=True).order_by('-id')
         else:
-            data = SentMail.objects.filter(scheduleMail=False).order_by('-id')
+            data = data.filter(scheduleMail=False).order_by('-id')
         serializer = self.serializer_class(data, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
     

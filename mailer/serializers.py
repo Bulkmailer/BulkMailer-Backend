@@ -95,7 +95,9 @@ class TemplateSerializer(serializers.ModelSerializer):
     
     def create(self,data):
         Template_object = Template.objects.create(**data)
-        if Template_object.template is None:
+        print(Template_object.template)
+        if Template_object.template == 'null':
+            print('hello')
             file = f"media/media/template/{data['html_file'].name}"
             HTMLFile = open(file, "r")
             index = HTMLFile.read()
