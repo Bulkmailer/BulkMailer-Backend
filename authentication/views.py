@@ -38,6 +38,7 @@ class Password_Change_View(generics.GenericAPIView, mixins.UpdateModelMixin):
     serializer_class = ChangePasswordSerializer
     
     def get_object(self):
+
         email = self.request.data.get('email')
         user = New_User_Resgistration.objects.get(email=email)
         return user
