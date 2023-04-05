@@ -11,6 +11,7 @@ from mailer.models import *
 from django_celery_results.models import TaskResult
 import re
 from django.conf import settings
+from django.template import Template, Context
 
 
 from mailer.models import Group_Details
@@ -38,16 +39,13 @@ def send_custom_mass_mail(self,_from,_group,_subject,_company,_body,_template,ma
     groups = Group_Details.objects.filter(group=_group)
     appGmail = Gmail_APP_Model.objects.get(id=_from)
     datatuple = [{'name':group.name,'email':group.email} for group in groups]
-    print(appGmail.email, appGmail.app_password)
     file_attached = FileUploadForMail.objects.filter(mail=mailID)
-    print(file_attached)
-    
     html = ''
     
     
     if _template is not None and _template != 'null':
-        print(_template)
-        html = str(Template.objects.get(id=_template).template)
+        html = Template(str(TemplateModel.objects.get(id=_template).template))
+        html_string = str(TemplateModel.objects.get(id=_template).template)
 
     connections = get_connection(
         username=appGmail.email,
@@ -61,15 +59,16 @@ def send_custom_mass_mail(self,_from,_group,_subject,_company,_body,_template,ma
     if _company is not None:
         by = f'{_company} <{appGmail.email}>'
         
-    print(_subject,_body)
     
     for recipient in datatuple:
          msg = EmailMultiAlternatives(_subject, _body,by, [recipient["email"]] , connection=connections)
          if _template is not None and _template != 'null':
              formatedhtml = html
-             if re.findall('{name}',html):
-                formatedhtml = html.format(name=recipient["name"])
-             msg.attach_alternative(formatedhtml, "text/html")
+             sending_string = ''
+             if re.findall('{{name}}',html_string):
+                formatedhtml = html.render(Context({'name': recipient["name"]}))
+                sending_string = formatedhtml + ''
+             msg.attach_alternative(sending_string, "text/html")
         
          if file_attached.count() > 0:
             for file in file_attached:
@@ -82,15 +81,14 @@ def send_custom_mass_mail(self,_from,_group,_subject,_company,_body,_template,ma
 def status_update(self):
     pending_task_id = SentMail.objects.filter(status='PENDING')
 
-    for i in pending_task_id:
+    for pending_task in pending_task_id:
         try :
-            celery_id = TaskResult.objects.get(task_id=i.celeryID)
-            i.status = celery_id.status
-            print(celery_id.status)
-            i.save()
+            celery_id = TaskResult.objects.get(task_id=pending_task.celeryID)
+            pending_task.status = celery_id.status
+            pending_task.save()
             
         except:
-            i.status = 'PENDING'
+            pending_task.status = 'PENDING'
         
     return 'Done'
         

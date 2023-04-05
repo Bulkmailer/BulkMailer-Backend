@@ -8,5 +8,6 @@ urlpatterns = [
     path('add_manually/', Add_Contact_Manually.as_view()),
     path('send_mail/', SendMassMail.as_view()),
     path('file_upload/',FileUploadModelView.as_view()),
-    path('template_view/',TemplateView.as_view())
+    path('template_view/',TemplateView.as_view()),
+
 ]

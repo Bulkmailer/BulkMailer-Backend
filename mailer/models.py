@@ -6,8 +6,8 @@ from import_export.widgets import ForeignKeyWidget
 from import_export.fields import Field
 # Create your models here.
 class Groups(models.Model):
-    user = models.ForeignKey(New_User_Resgistration,on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
+    user = models.ForeignKey(New_User_Resgistration,on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=200, null=True)
     
     def __str__(self):
         return self.name
@@ -19,9 +19,9 @@ class Group_Details(models.Model):
         ('Others', 'Others')
     )
     group = models.ForeignKey(Groups, on_delete=models.CASCADE, null=True)
-    email = models.CharField(max_length=200)
+    email = models.CharField(max_length=200, null=True)
     name = models.CharField(max_length=200,null=True)
-    gender = models.CharField(max_length=200, choices=GENDER, blank=False)
+    gender = models.CharField(max_length=200, choices=GENDER, blank=False, null=True)
     
     def __str__(self):
         return str(self.name) + "-" + str(self.email)
@@ -36,8 +36,8 @@ class GroupResource(resources.ModelResource):
     class Meta:
         model = Group_Details
 
-class Template(models.Model):
-    name = models.CharField(max_length=200)
+class TemplateModel(models.Model):
+    name = models.CharField(max_length=200, unique=True)
     template = models.TextField(default="null")
     html_file = models.FileField(upload_to="media/template",null=True,blank=True)
     

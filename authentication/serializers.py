@@ -34,7 +34,6 @@ class OTP_Serializer(serializers.ModelSerializer):
     def create(self, data):
         userOTP = OTP.objects.filter(email=data["email"])
         if userOTP is not None:
-            print(userOTP)
             userOTP.delete()
         email = data['email']
         OTP.objects.create(email=email)
@@ -222,7 +221,7 @@ class GmailAPPModelSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {'msg': "Enter a valid email"}
             )
-        if  Gmail_APP_Model.objects.filter(email=email).count() != 0:
+        if  Gmail_APP_Model.objects.filter(email=email).exists():
             raise ValidationError(
                 {'msg': "Entered mail already exists"}
             )

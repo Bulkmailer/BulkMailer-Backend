@@ -15,22 +15,13 @@ class CreateGroupSerializer(serializers.ModelSerializer):
         model = Groups
         fields = '__all__'
     
-    def validate(self, attrs):
-        groupName = attrs['name']
-        user = attrs['user']
-        
-        groups = Groups.objects.filter(user=user)
-        
-        if groups.filter(name=groupName).exists():
-            raise ValidationError(
-                {'msg':'Group with this name already exists'}
-            )
-        return attrs
 
 class ViewGroupDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group_Details
         fields = '__all__'
+
+        
 
 
 class AddContactsManuallySerializer(serializers.ModelSerializer):
@@ -90,19 +81,16 @@ class FileUploadSerializer(serializers.ModelSerializer):
 
 class TemplateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Template
+        model = TemplateModel
         fields = '__all__'
     
     def create(self,data):
-        Template_object = Template.objects.create(**data)
-        print(Template_object.template)
+        Template_object = TemplateModel.objects.create(**data)
         if Template_object.template == 'null':
-            print('hello')
             file = f"media/media/template/{data['html_file'].name}"
             HTMLFile = open(file, "r")
             index = HTMLFile.read()
             S = BeautifulSoup(index, 'lxml')
-            print(S.body.prettify())
             Template_object.template = S.body.prettify()
             Template_object.save()
         return data

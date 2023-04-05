@@ -4,7 +4,7 @@ from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 admin.site.register(models.Groups)
-admin.site.register(models.Template)
+admin.site.register(models.TemplateModel)
 admin.site.register(models.SentMail)
 admin.site.register(models.FileUploadForMail)
 
