@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    'bulkmailer.middleware.RequestLoggerMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -219,3 +220,9 @@ CELERY_RESULT_BACKEND = "django-db"
 # CELERY BEAT
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+
+CORS_ALLOWED_ORIGINS = [
+    "https://bulkmailer.suhaila.tech",
+    "http://localhost:3000"
+]
