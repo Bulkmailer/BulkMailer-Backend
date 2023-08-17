@@ -152,9 +152,15 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
-    # 'DEFAULT_PARSER_CLASSES': [
-    #     'rest_framework.parsers.MultiPartParser',
-    # ]
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/minute',
+        'user': '5/minute'
+    },
+    'NUM_PROXIES': 0, 
 }
 
 AUTH_USER_MODEL = "authentication.New_User_Resgistration"
