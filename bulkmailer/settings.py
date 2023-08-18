@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    'bulkmailer.middleware.RequestLoggerMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -152,9 +153,15 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
-    # 'DEFAULT_PARSER_CLASSES': [
-    #     'rest_framework.parsers.MultiPartParser',
-    # ]
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/minute',
+        'user': '5/minute'
+    },
+    'NUM_PROXIES': 0, 
 }
 
 AUTH_USER_MODEL = "authentication.New_User_Resgistration"
@@ -213,3 +220,9 @@ CELERY_RESULT_BACKEND = "django-db"
 # CELERY BEAT
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+
+CORS_ALLOWED_ORIGINS = [
+    "https://bulkmailer.suhaila.tech",
+    "http://localhost:3000"
+]
