@@ -68,7 +68,8 @@ class NewUserSerializer(serializers.ModelSerializer):
             "password": {"write_only": True},
         }
 
-    def validate_password(self, data):
+    @staticmethod
+    def validate_password(data):
         if (
             len(data) < 8
             or not re.findall("\d", data)
@@ -84,7 +85,8 @@ class NewUserSerializer(serializers.ModelSerializer):
 
         return data
 
-    def validate_email(self, data):
+    @staticmethod
+    def validate_email(data):
         try:
             userOTP = OTP.objects.get(email=data)
         except:
@@ -139,7 +141,8 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         model = New_User_Resgistration
         fields = ["email", "password"]
 
-    def validate_email(self, data):
+    @staticmethod
+    def validate_email(data):
         try:
             userOTP = OTP.objects.get(email=data)
         except:
@@ -226,7 +229,8 @@ class UpdateAppPassword(serializers.ModelSerializer):
         model = Gmail_APP_Model
         fields = ["email", "app_password"]
 
-    def validated(self, data):
+    @staticmethod
+    def validated(data):
         email = data["email"]
 
         try:
@@ -252,7 +256,8 @@ class ProfileDetailsUpdateSerializer(serializers.ModelSerializer):
             "email": {"read_only": True},
         }
 
-    def get_AppPassword(self, obj):
+    @staticmethod
+    def get_AppPassword(obj):
         try:
             Gmail_APP_Model.objects.get(id=obj.id)
             return True

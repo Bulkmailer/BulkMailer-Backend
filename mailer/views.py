@@ -82,7 +82,8 @@ class BulkAddEmail(generics.GenericAPIView):
         group_id = self.request.data.get("group_id")
         return Group_Details.objects.filter(group=group_id)
 
-    def post(self, request, *args, **kwargs):
+    @staticmethod
+    def post(request, *args, **kwargs):
         dataRequest = request.data.get("data[]")
         group = Groups.objects.get(id=request.data.get("group"))
         for data in dataRequest:
@@ -173,7 +174,8 @@ class SendMassMail(
         self.update(request, *args, **kwargs)
         return Response({"msg": "Mail has been updated"}, status=status.HTTP_200_OK)
 
-    def delete(self, request):
+    @staticmethod
+    def delete(request):
         taskID = SentMail.objects.get(id=request.data.get("id")).celeryID
         app.control.revoke(taskID)
         SentMail.objects.get(id=request.data.get("id")).delete()
@@ -192,7 +194,8 @@ class FileUploadModelView(generics.CreateAPIView, generics.ListAPIView):
         if request.data["file"]:
             return super().post(request, *args, **kwargs)
 
-    def delete(self, request):
+    @staticmethod
+    def delete(request):
         FileUploadForMail.objects.get(id=request.data.get("id")).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
