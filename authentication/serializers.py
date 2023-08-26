@@ -70,10 +70,10 @@ class NewUserSerializer(serializers.ModelSerializer):
     def validate_password(data):
         if (
             len(data) < 8
-            or not re.findall("\d", data)
+            or not re.findall(r"\d", data)
             or not re.findall("[A-Z]", data)
             or not re.findall("[a-z]", data)
-            or not re.findall("[()[\]{}|\\`~!@#$%^&*_\-+=;:'\",<>./?]", data)
+            or not re.findall(r"[()[\]{}|\\`~!@#$%^&*_\-+=;:'\",<>./?]", data)
         ):
             raise ValidationError(
                 {
@@ -157,10 +157,10 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
         if (
             len(newPassword) < 8
-            or not re.findall("\d", newPassword)
+            or not re.findall(r"\d", newPassword)
             or not re.findall("[A-Z]", newPassword)
             or not re.findall("[a-z]", newPassword)
-            or not re.findall("[()[\]{}|\\`~!@#$%^&*_\-+=;:'\",<>./?]", newPassword)
+            or not re.findall(r"[()[\]{}|\\`~!@#$%^&*_\-+=;:'\",<>./?]", newPassword)
         ):
             raise ValidationError(
                 {
