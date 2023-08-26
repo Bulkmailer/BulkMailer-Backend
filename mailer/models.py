@@ -1,4 +1,3 @@
-from distutils.command import upload
 
 from django.db import models
 from import_export import resources

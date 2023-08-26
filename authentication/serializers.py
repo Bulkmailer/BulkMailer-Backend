@@ -1,13 +1,11 @@
 import email
 import re
-from asyncore import write
 from datetime import timedelta
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
 
 from .models import *
 from .task import *
