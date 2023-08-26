@@ -90,7 +90,7 @@ class NewUserSerializer(serializers.ModelSerializer):
         except:
             context = {"msg": "Please raise OTP for email verification"}
             raise ValidationError(context)
-        if userOTP.is_verified == False:
+        if userOTP.is_verified is False:
             context = {"msg": "Please verify your email first"}
             raise ValidationError(context)
         return data
@@ -146,7 +146,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         except:
             context = {"msg": "Please raise OTP for email verification"}
             raise ValidationError(context)
-        if userOTP.is_verified == False:
+        if userOTP.is_verified is False:
             context = {"msg": "Please verify your email first"}
             raise ValidationError(context)
         return data
