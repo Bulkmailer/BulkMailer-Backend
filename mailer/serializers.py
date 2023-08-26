@@ -1,6 +1,5 @@
-from dataclasses import field, fields
+from dataclasses import fields
 from datetime import datetime
-from re import template
 
 import pytz
 from bs4 import BeautifulSoup

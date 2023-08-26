@@ -1,12 +1,7 @@
-import email
 from urllib import request
-from venv import create
-
-import pandas as pd
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from tablib import Dataset
 
 from authentication.task import *
 from bulkmailer.celery import app
