@@ -70,7 +70,7 @@ class MassMailSerializer(serializers.ModelSerializer):
 
         instance = super(MassMailSerializer, self).update(instance, data)
         mail = SentMail.objects.get(id=instance.id)
-        if mail.scheduleMail == True:
+        if mail.scheduleMail is True:
             asia_tz = pytz.timezone("Asia/kolkata")
             asia_dt = asia_tz.localize(
                 datetime(
