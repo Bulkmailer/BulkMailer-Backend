@@ -29,7 +29,7 @@ A Django based backend system for bulk mailing using PostgreSQL, Celery, Nginx, 
 1. Clone the repository:
 
 ```CMD
-git clone https://github.com/suhaillahmad/Bulk-Mailer-Backend.git
+git clone https://github.com/bulkmailer/BulkMailer-Backend.git
 ```
 
 To run the server, you need to have Python installed on your machine. If you don't have it installed, you can follow the instructions [here](https://www.geeksforgeeks.org/download-and-install-python-3-latest-version/) to install it.
