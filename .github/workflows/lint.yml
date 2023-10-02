@@ -9,4 +9,4 @@ jobs:
       - name: Python Black
         uses: cytopia/docker-black@0.8
         with:
-          path: '/'
+          path: '.'
