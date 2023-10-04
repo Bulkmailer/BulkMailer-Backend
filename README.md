@@ -64,10 +64,20 @@ pip install -r requirements.txt
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 
+SECRET_KEY = '' 
+
 DBPASSL = ''
 DBHOSTL = ''
 DBNAMEL = ''
 DBUSERL = ''
+DBPORTL = ''
+
+TIME_ZONE = ''
+
+CSRF_TRUSTED_ORIGINS = ''
+CORS_ALLOWED_ORIGINS = ''
+
+CELERY_BROKER_URL = ''
 ```
 
 5. Create a PostgreSQL database and connect it by entering credentials in .env file, once connected run the migrate command
@@ -91,7 +101,7 @@ http://127.0.0.1:8000
 7. You can create a superuser executing the following commands
 
 ```CMD
-python manage.py createsuperuer
+python manage.py createsuperuser
 ```
 
 A prompt will appear asking for email followed by password.
