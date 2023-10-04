@@ -33,7 +33,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", 0))
 
 ALLOWED_HOSTS = ["*"]
 
@@ -104,7 +104,7 @@ DATABASES = {
         "USER": os.environ.get("DBUSERL"),
         "PASSWORD": os.environ.get("DBPASSL"),
         "HOST": os.environ.get("DBHOSTL"),
-        "PORT": "5432",
+        "PORT": int(os.environ.get("DBPORTL", 5432)),
     }
 }
 
@@ -132,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Asia/Kolkata"
+TIME_ZONE = os.environ.get("TIME_ZONE", "Asia/Kolkata")
 # TIME_ZONE = "UTC"
 
 USE_I18N = True
@@ -175,7 +175,9 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
-CSRF_TRUSTED_ORIGINS = ["https://bulk-mailer-si.azurewebsites.net"]
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "localhost:3000").split(
+    ","
+)
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
@@ -205,11 +207,11 @@ SIMPLE_JWT = {
 
 # Celery Settings
 
-CELERY_BROKER_URL = "redis://127.0.0.1:6379"
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379")
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
-CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_TIMEZONE = TIME_ZONE
 CELERY_ENABLE_UTC = False
 
 CELERY_RESULT_BACKEND = "django-db"
@@ -219,4 +221,6 @@ CELERY_RESULT_BACKEND = "django-db"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 
-CORS_ALLOWED_ORIGINS = ["https://bulkmailer.suhaila.tech", "http://localhost:3000"]
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "localhost:3000").split(
+    ","
+)
