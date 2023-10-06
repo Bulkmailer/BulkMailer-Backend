@@ -90,7 +90,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name="Group_Details",
+            name="GroupDetails",
             fields=[
                 (
                     "id",

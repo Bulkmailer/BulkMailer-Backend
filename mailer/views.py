@@ -75,17 +75,17 @@ class BulkAddEmail(generics.GenericAPIView):
 
     def get_queryset(self):
         group_id = self.request.data.get("group_id")
-        return Group_Details.objects.filter(group=group_id)
+        return GroupDetails.objects.filter(group=group_id)
 
     @staticmethod
     def post(request, *args, **kwargs):
         dataRequest = request.data.get("data[]")
         group = Groups.objects.get(id=request.data.get("group"))
         for data in dataRequest:
-            if not Group_Details.objects.filter(group=group.id).filter(
+            if not GroupDetails.objects.filter(group=group.id).filter(
                 email=data["email"]
             ).exists() and re.findall("@.", data["email"]):
-                Group_Details.objects.create(
+                GroupDetails.objects.create(
                     group=group,
                     email=data["email"],
                     name=data["name"],
@@ -96,17 +96,17 @@ class BulkAddEmail(generics.GenericAPIView):
 
 
 # View Group Details and Update API
-class View_Group_data(
+class ViewGroupData(
     generics.ListAPIView, generics.UpdateAPIView, generics.DestroyAPIView
 ):
     permission_classes = [IsAuthenticated]
     serializer_class = ViewGroupDataSerializer
 
     def get_object(self):
-        return Group_Details.objects.get(id=self.request.data.get("id"))
+        return GroupDetails.objects.get(id=self.request.data.get("id"))
 
     def get(self, request):
-        groupData = Group_Details.objects.filter(
+        groupData = GroupDetails.objects.filter(
             group=request.GET.get("group_id")
         ).order_by("-id")
         serializer = self.serializer_class(groupData, many=True)
@@ -115,9 +115,9 @@ class View_Group_data(
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, *args, **kwargs):
-        groupData = Group_Details.objects.get(id=self.request.data.get("id"))
+        groupData = GroupDetails.objects.get(id=self.request.data.get("id"))
         if (
-            Group_Details.objects.filter(group=groupData.group)
+            GroupDetails.objects.filter(group=groupData.group)
             .filter(email=request.data.get("email"))
             .exists()
         ):
@@ -128,12 +128,12 @@ class View_Group_data(
         )
 
     def delete(self, request):
-        Group_Details.objects.get(id=request.data.get("id")).delete()
+        GroupDetails.objects.get(id=request.data.get("id")).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # ADD Contacts Manually API
-class Add_Contact_Manually(generics.CreateAPIView, generics.UpdateAPIView):
+class AddContactManually(generics.CreateAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AddContactsManuallySerializer
 
