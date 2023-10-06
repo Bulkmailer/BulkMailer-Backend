@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="gmail_app_model",
+            model_name="GmailAPPModel",
             name="email",
             field=models.CharField(max_length=200),
         ),

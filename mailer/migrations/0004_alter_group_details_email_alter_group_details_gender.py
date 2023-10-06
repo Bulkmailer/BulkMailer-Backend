@@ -10,12 +10,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="group_details",
+            model_name="GroupDetails",
             name="email",
             field=models.CharField(max_length=200, null=True),
         ),
         migrations.AlterField(
-            model_name="group_details",
+            model_name="GroupDetails",
             name="gender",
             field=models.CharField(
                 choices=[("Male", "Male"), ("Female", "Female"), ("Others", "Others")],

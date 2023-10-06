@@ -161,7 +161,7 @@ REST_FRAMEWORK = {
     "NUM_PROXIES": 0,
 }
 
-AUTH_USER_MODEL = "authentication.New_User_Resgistration"
+AUTH_USER_MODEL = "authentication.NewUserResgistration"
 CORS_ALLOW_ALL_ORIGINS = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

@@ -44,7 +44,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class New_User_Resgistration(AbstractBaseUser):
+class NewUserResgistration(AbstractBaseUser):
     GENDER = (("Male", "Male"), ("Female", "Female"), ("Others", "Others"))
 
     email = models.EmailField(
@@ -104,9 +104,9 @@ class New_User_Resgistration(AbstractBaseUser):
         return str(refresh.access_token)
 
 
-class Gmail_APP_Model(models.Model):
+class GmailAPPModel(models.Model):
     user = models.ForeignKey(
-        New_User_Resgistration, on_delete=models.CASCADE, null=True, blank=True
+        NewUserResgistration, on_delete=models.CASCADE, null=True, blank=True
     )
     email = models.CharField(max_length=200)
     app_password = models.CharField(max_length=200)
@@ -127,10 +127,10 @@ class OTP(models.Model):
         return self.email
 
 
-@receiver(pre_save, sender=New_User_Resgistration)
+@receiver(pre_save, sender=NewUserResgistration)
 def revoke_tokens(sender, instance, **kwargs):
     if not instance._state.adding:
-        existing_user = New_User_Resgistration.objects.get(pk=instance.pk)
+        existing_user = NewUserResgistration.objects.get(pk=instance.pk)
         if (
             instance.password != existing_user.password
             or instance.email != existing_user.email

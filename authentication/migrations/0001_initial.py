@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="New_User_Resgistration",
+            name="NewUserResgistration",
             fields=[
                 (
                     "id",
@@ -94,7 +94,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name="Gmail_APP_Model",
+            name="GmailAPPModel",
             fields=[
                 (
                     "id",

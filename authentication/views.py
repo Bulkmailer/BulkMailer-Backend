@@ -7,12 +7,12 @@ from .serializers import *
 
 
 # API for sending OTP.
-class OTP_send(generics.CreateAPIView):
-    serializer_class = OTP_Serializer
+class OtpSend(generics.CreateAPIView):
+    serializer_class = OTPSerializer
 
 
 # OTP verification API.
-class Verify_OTP(generics.CreateAPIView):
+class VerifyOTP(generics.CreateAPIView):
     serializer_class = OTPVerifySerializer
 
     def create(self, request, *args, **kwargs):
@@ -22,7 +22,7 @@ class Verify_OTP(generics.CreateAPIView):
 
 
 # Registration API
-class New_user_registration(generics.CreateAPIView):
+class NewUserRegistration(generics.CreateAPIView):
     serializer_class = NewUserSerializer
 
 
@@ -34,17 +34,17 @@ class Login(generics.CreateAPIView):
 # Password OTP view
 
 
-class Reset_Password_OTP_View(generics.CreateAPIView):
+class ResetPasswordOtpView(generics.CreateAPIView):
     serializer_class = ResetPasswordViewOTPSerializer
 
 
 # Reset Password API
-class Password_Change_View(generics.GenericAPIView, mixins.UpdateModelMixin):
+class PasswordChangeView(generics.GenericAPIView, mixins.UpdateModelMixin):
     serializer_class = ChangePasswordSerializer
 
     def get_object(self):
         email = self.request.data.get("email")
-        user = New_User_Resgistration.objects.get(email=email)
+        user = NewUserResgistration.objects.get(email=email)
         return user
 
     def patch(self, request, *args, **kwargs):
@@ -55,14 +55,14 @@ class Password_Change_View(generics.GenericAPIView, mixins.UpdateModelMixin):
 
 
 # Gmail APP Password Add and get APIs
-class Add_Gmail_Pass(
+class AddGmailPass(
     generics.CreateAPIView, generics.ListAPIView, generics.UpdateAPIView
 ):
     serializer_class = GmailAPPModelSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Gmail_APP_Model.objects.filter(user=self.request.user.id)
+        return GmailAPPModel.objects.filter(user=self.request.user.id)
 
     def post(self, request, *args, **kwargs):
         request.POST._mutable = True
@@ -71,13 +71,13 @@ class Add_Gmail_Pass(
 
 
 # Gmail APP Password Update API
-class Update_APP_Password(generics.GenericAPIView, mixins.UpdateModelMixin):
+class UpdateAppPassword(generics.GenericAPIView, mixins.UpdateModelMixin):
     serializer_class = UpdateAppPassword
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         email = self.request.data.get("email")
-        app_pass = Gmail_APP_Model.objects.get(email=email)
+        app_pass = GmailAPPModel.objects.get(email=email)
         return app_pass
 
     def patch(self, request, *args, **kwargs):
@@ -90,16 +90,16 @@ class Update_APP_Password(generics.GenericAPIView, mixins.UpdateModelMixin):
 # Profile Details Get and Update APIs
 
 
-class Profile_details(generics.ListAPIView, mixins.UpdateModelMixin):
+class ProfileDetails(generics.ListAPIView, mixins.UpdateModelMixin):
     serializer_class = ProfileDetailsUpdateSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        user = New_User_Resgistration.objects.get(id=self.request.user.id)
+        user = NewUserResgistration.objects.get(id=self.request.user.id)
         return user
 
     def get_queryset(self):
-        return New_User_Resgistration.objects.filter(id=self.request.user.id)
+        return NewUserResgistration.objects.filter(id=self.request.user.id)
 
     def patch(self, request, *args, **kwargs):
         self.update(request, *args, **kwargs)
