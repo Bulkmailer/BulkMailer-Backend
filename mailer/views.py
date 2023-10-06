@@ -30,6 +30,13 @@ class CreateGroup(
 
     def post(self, request, *args, **kwargs):
         if (
+            Groups.objects.get(id=self.request.data.get("id")).user.id
+            != request.user.id
+        ):
+            return Response(
+                {"msg": "permission denied"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        if (
             Groups.objects.filter(user=request.user.id)
             .filter(name=request.data.get("name"))
             .exists()
