@@ -72,7 +72,7 @@ class AddGmailPass(
 
 # Gmail APP Password Update API
 class UpdateAppPassword(generics.GenericAPIView, mixins.UpdateModelMixin):
-    serializer_class = UpdateAppPassword
+    serializer_class = UpdateAppPasswordSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):

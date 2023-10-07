@@ -222,7 +222,7 @@ class GmailAPPModelSerializer(serializers.ModelSerializer):
         return data
 
 
-class UpdateAppPassword(serializers.ModelSerializer):
+class UpdateAppPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = GmailAPPModel
         fields = ["email", "app_password"]
