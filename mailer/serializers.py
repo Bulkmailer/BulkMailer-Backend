@@ -31,9 +31,9 @@ class AddContactsManuallySerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         email = data["email"]
-        GroupDetails = GroupDetails.objects.filter(group=data["group"])
+        group_details = GroupDetails.objects.filter(group=data["group"])
 
-        if GroupDetails.filter(email=email).exists():
+        if group_details.filter(email=email).exists():
             raise ValidationError({"msg": "email already exists in this group"})
 
         return data
