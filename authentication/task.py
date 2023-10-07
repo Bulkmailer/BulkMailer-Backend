@@ -10,7 +10,7 @@ from django.utils import timezone
 from django_celery_results.models import TaskResult
 
 from mailer.models import *
-from mailer.models import Group_Details
+from mailer.models import GroupDetails
 
 from .models import *
 
@@ -37,8 +37,8 @@ def send_otp(self, email):
 def send_custom_mass_mail(
     self, _from, _group, _subject, _company, _body, _template, mailID
 ):
-    groups = Group_Details.objects.filter(group=_group)
-    appGmail = Gmail_APP_Model.objects.get(id=_from)
+    groups = GroupDetails.objects.filter(group=_group)
+    appGmail = GmailAPPModel.objects.get(id=_from)
     datatuple = [{"name": group.name, "email": group.email} for group in groups]
     file_attached = FileUploadForMail.objects.filter(mail=mailID)
     html = ""

@@ -10,6 +10,6 @@ admin.site.register(models.SentMail)
 admin.site.register(models.FileUploadForMail)
 
 
-@admin.register(models.Group_Details)
+@admin.register(models.GroupDetails)
 class PersonAdmin(ImportExportModelAdmin):
     pass

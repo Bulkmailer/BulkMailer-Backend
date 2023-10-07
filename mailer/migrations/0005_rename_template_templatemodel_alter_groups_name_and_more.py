@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("mailer", "0004_alter_group_details_email_alter_group_details_gender"),
+        ("mailer", "0004_alter_GroupDetails_email_alter_GroupDetails_gender"),
     ]
 
     operations = [

@@ -11,7 +11,7 @@ from .models import *
 from .task import *
 
 
-class OTP_Serializer(serializers.ModelSerializer):
+class OTPSerializer(serializers.ModelSerializer):
     class Meta:
         model = OTP
         fields = ["email"]
@@ -20,7 +20,7 @@ class OTP_Serializer(serializers.ModelSerializer):
         email = data["email"]
         if not re.findall("@.", email):
             raise ValidationError(("Enter a valid email"))
-        user = list(New_User_Resgistration.objects.filter(email=email))
+        user = list(NewUserResgistration.objects.filter(email=email))
         if user != []:
             raise ValidationError({"msg": "User already exists"})
         return data
@@ -60,7 +60,7 @@ class OTPVerifySerializer(serializers.Serializer):
 
 class NewUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = New_User_Resgistration
+        model = NewUserResgistration
         fields = ["id", "name", "user_name", "email", "password"]
         extra_kwargs = {
             "password": {"write_only": True},
@@ -97,7 +97,7 @@ class NewUserSerializer(serializers.ModelSerializer):
 
     def create(self, data):
         userOTP = OTP.objects.get(email=data["email"])
-        user = New_User_Resgistration.objects.create(
+        user = NewUserResgistration.objects.create(
             name=data["name"],
             user_name=data["user_name"],
             email=data["email"],
@@ -118,7 +118,7 @@ class LoginSerializer(serializers.Serializer):
 
     def validate(self, data):
         try:
-            New_User_Resgistration.objects.get(email=data["email"])
+            NewUserResgistration.objects.get(email=data["email"])
         except:
             raise ValidationError({"msg": "User Doesn’t Exist"})
 
@@ -136,7 +136,7 @@ class LoginSerializer(serializers.Serializer):
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
-        model = New_User_Resgistration
+        model = NewUserResgistration
         fields = ["email", "password"]
 
     @staticmethod
@@ -192,7 +192,7 @@ class ResetPasswordViewOTPSerializer(serializers.ModelSerializer):
         if not re.findall("@.", email):
             raise ValidationError({"msg": "Enter a valid email"})
         try:
-            New_User_Resgistration.objects.get(email=email)
+            NewUserResgistration.objects.get(email=email)
         except:
             raise ValidationError({"msg": "User Does not exists with the given email"})
         return data
@@ -210,21 +210,21 @@ class ResetPasswordViewOTPSerializer(serializers.ModelSerializer):
 
 class GmailAPPModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Gmail_APP_Model
+        model = GmailAPPModel
         fields = "__all__"
 
     def validate(self, data):
         email = data["email"]
         if not re.findall("@.", email):
             raise ValidationError({"msg": "Enter a valid email"})
-        if Gmail_APP_Model.objects.filter(email=email).exists():
+        if GmailAPPModel.objects.filter(email=email).exists():
             raise ValidationError({"msg": "Entered mail already exists"})
         return data
 
 
 class UpdateAppPassword(serializers.ModelSerializer):
     class Meta:
-        model = Gmail_APP_Model
+        model = GmailAPPModel
         fields = ["email", "app_password"]
 
     @staticmethod
@@ -232,7 +232,7 @@ class UpdateAppPassword(serializers.ModelSerializer):
         email = data["email"]
 
         try:
-            appGmail = Gmail_APP_Model.objects.get(email=email)
+            appGmail = GmailAPPModel.objects.get(email=email)
         except:
             raise ValidationError(
                 {"msg": "App Password with this email does not exists"}
@@ -247,7 +247,7 @@ class ProfileDetailsUpdateSerializer(serializers.ModelSerializer):
     AppPassword = serializers.SerializerMethodField()
 
     class Meta:
-        model = New_User_Resgistration
+        model = NewUserResgistration
         fields = ["email", "name", "user_name", "gender", "mobile", "AppPassword"]
 
         extra_kwargs = {
@@ -257,7 +257,7 @@ class ProfileDetailsUpdateSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_AppPassword(obj):
         try:
-            Gmail_APP_Model.objects.get(id=obj.id)
+            GmailAPPModel.objects.get(id=obj.id)
             return True
         except:
             return False

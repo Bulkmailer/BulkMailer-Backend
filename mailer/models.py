@@ -8,16 +8,14 @@ from authentication.models import *
 
 # Create your models here.
 class Groups(models.Model):
-    user = models.ForeignKey(
-        New_User_Resgistration, on_delete=models.CASCADE, null=True
-    )
+    user = models.ForeignKey(NewUserResgistration, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return self.name
 
 
-class Group_Details(models.Model):
+class GroupDetails(models.Model):
     GENDER = (("Male", "Male"), ("Female", "Female"), ("Others", "Others"))
     group = models.ForeignKey(Groups, on_delete=models.CASCADE, null=True)
     email = models.CharField(max_length=200, null=True)
@@ -34,7 +32,7 @@ class GroupResource(resources.ModelResource):
     )
 
     class Meta:
-        model = Group_Details
+        model = GroupDetails
 
 
 class TemplateModel(models.Model):
@@ -47,7 +45,7 @@ class TemplateModel(models.Model):
 
 
 class SentMail(models.Model):
-    user = models.ForeignKey(New_User_Resgistration, on_delete=models.CASCADE)
+    user = models.ForeignKey(NewUserResgistration, on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=True, blank=True)
     _from = models.CharField(max_length=200, null=True, blank=True)
     _group = models.CharField(max_length=200, null=True, blank=True)
