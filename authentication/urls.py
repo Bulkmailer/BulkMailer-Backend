@@ -12,6 +12,6 @@ urlpatterns = [
     path("otp_reset_password/", ResetPasswordOtpView.as_view()),
     path("enter_new_password/", PasswordChangeView.as_view()),
     path("add_App_password/", AddGmailPass.as_view()),
-    path("UpdateAppPassword/", UpdateAppPassword.as_view()),
-    path("get_ProfileDetails/", ProfileDetails.as_view()),
+    path("update_app_password/", UpdateAppPassword.as_view()),
+    path("get_profile_details/", ProfileDetails.as_view()),
 ]
