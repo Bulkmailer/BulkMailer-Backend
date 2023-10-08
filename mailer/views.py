@@ -29,6 +29,13 @@ class CreateGroup(
         return Groups.objects.filter(user=self.request.user.id)
 
     def post(self, request, *args, **kwargs):
+
+        if not request.user.is_authenticated:
+            return Response(
+                {'error':'permission denied.'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
         if (
             Groups.objects.filter(user=request.user.id)
             .filter(name=request.data.get("name"))
